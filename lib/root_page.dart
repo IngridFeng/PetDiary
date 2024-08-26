@@ -40,67 +40,56 @@ class _RootPage extends State<RootPage> {
       ),
     );
 
-    return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          // Navigation bar appears at the bottom for narrow screens (e.g. phones)
-          if (constraints.maxWidth < 450) {
-            return Column(
-              children: <Widget>[
-                Expanded(child: mainArea),
-                NavigationBar(
-                  backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                  destinations: NavBarState.values
-                      .map(
-                        (navBarState) => NavigationDestination(
-                          icon: Icon(NavBarItem(navBarState: navBarState)
-                              .getData()
-                              .icon),
-                          label: NavBarItem(navBarState: navBarState)
-                              .getData()
-                              .label,
-                        ),
-                      )
-                      .toList(),
-                  selectedIndex: appState.navBarState.index,
-                  indicatorColor: Theme.of(context).colorScheme.inversePrimary,
-                  onDestinationSelected: (selectedIndex) {
-                    appState.setNavBarState(NavBarState.values[selectedIndex]);
-                  },
+    // Navigation bar appears at the bottom for narrow screens (e.g. phones)
+    if (MediaQuery.of(context).size.width < 450) {
+      return Scaffold(
+        body: Expanded(child: mainArea),
+        bottomNavigationBar: NavigationBar(
+          backgroundColor: Theme.of(context).colorScheme.onPrimary,
+          destinations: NavBarState.values
+              .map(
+                (navBarState) => NavigationDestination(
+                  icon:
+                      Icon(NavBarItem(navBarState: navBarState).getData().icon),
+                  label: NavBarItem(navBarState: navBarState).getData().label,
                 ),
-              ],
-            );
-          } else {
-            // Navigation bar appears at the left for wider screens (e.g. web)
-            return Row(
-              children: <Widget>[
-                NavigationRail(
-                  backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                  extended: constraints.maxWidth >= 600,
-                  destinations: NavBarState.values
-                      .map(
-                        (navBarState) => NavigationRailDestination(
-                          icon: Icon(NavBarItem(navBarState: navBarState)
-                              .getData()
-                              .icon),
-                          label: Text(NavBarItem(navBarState: navBarState)
-                              .getData()
-                              .label),
-                        ),
-                      )
-                      .toList(),
-                  selectedIndex: appState.navBarState.index,
-                  indicatorColor: Theme.of(context).colorScheme.inversePrimary,
-                  onDestinationSelected: (selectedIndex) {
-                    appState.setNavBarState(NavBarState.values[selectedIndex]);
-                  },
-                ),
-                Expanded(child: mainArea),
-              ],
-            );
-          }
-        },
-      ),
-    );
+              )
+              .toList(),
+          selectedIndex: appState.navBarState.index,
+          indicatorColor: Theme.of(context).colorScheme.inversePrimary,
+          onDestinationSelected: (selectedIndex) {
+            appState.setNavBarState(NavBarState.values[selectedIndex]);
+          },
+        ),
+      );
+    } else {
+      // Navigation bar appears at the left for wider screens (e.g. web)
+      return Scaffold(
+        body: Row(
+          children: <Widget>[
+            NavigationRail(
+              backgroundColor: Theme.of(context).colorScheme.onPrimary,
+              extended: MediaQuery.of(context).size.width >= 600,
+              destinations: NavBarState.values
+                  .map(
+                    (navBarState) => NavigationRailDestination(
+                      icon: Icon(
+                          NavBarItem(navBarState: navBarState).getData().icon),
+                      label: Text(
+                          NavBarItem(navBarState: navBarState).getData().label),
+                    ),
+                  )
+                  .toList(),
+              selectedIndex: appState.navBarState.index,
+              indicatorColor: Theme.of(context).colorScheme.inversePrimary,
+              onDestinationSelected: (selectedIndex) {
+                appState.setNavBarState(NavBarState.values[selectedIndex]);
+              },
+            ),
+            Expanded(child: mainArea),
+          ],
+        ),
+      );
+    }
   }
 }
