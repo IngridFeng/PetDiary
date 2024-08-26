@@ -1,3 +1,3 @@
 # pet_diary
 
-A pet's personal diary.
+A pet's own diary.
