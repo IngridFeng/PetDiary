@@ -43,7 +43,7 @@ class _RootPage extends State<RootPage> {
     // Navigation bar appears at the bottom for narrow screens (e.g. phones)
     if (MediaQuery.of(context).size.width < 450) {
       return Scaffold(
-        body: Expanded(child: mainArea),
+        body: mainArea,
         bottomNavigationBar: NavigationBar(
           backgroundColor: Theme.of(context).colorScheme.onPrimary,
           destinations: NavBarState.values
