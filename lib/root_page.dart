@@ -20,11 +20,11 @@ class _RootPage extends State<RootPage> {
       case NavBarState.home:
         selectedPage = const HomePage();
       case NavBarState.friends:
-        selectedPage = const Placeholder(color: Colors.blue);
+        selectedPage = const Placeholder(color: Colors.amber);
       case NavBarState.chat:
-        selectedPage = const Placeholder(color: Colors.blue);
+        selectedPage = const Placeholder(color: Colors.green);
       case NavBarState.profile:
-        selectedPage = const Placeholder(color: Colors.blue);
+        selectedPage = const Placeholder(color: Colors.yellow);
       default:
         throw UnimplementedError(
             "$appState.navBarState not implemented for the page.");
@@ -46,21 +46,25 @@ class _RootPage extends State<RootPage> {
           // Navigation bar appears at the bottom for narrow screens (e.g. phones)
           if (constraints.maxWidth < 450) {
             return Column(
-              children: [
+              children: <Widget>[
                 Expanded(child: mainArea),
-                BottomNavigationBar(
-                  items: [
-                    for (var navBarState in NavBarState.values)
-                      BottomNavigationBarItem(
+                NavigationBar(
+                  backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                  destinations: NavBarState.values
+                      .map(
+                        (navBarState) => NavigationDestination(
                           icon: Icon(NavBarItem(navBarState: navBarState)
                               .getData()
                               .icon),
                           label: NavBarItem(navBarState: navBarState)
                               .getData()
-                              .label),
-                  ],
-                  currentIndex: appState.navBarState.index,
-                  onTap: (selectedIndex) {
+                              .label,
+                        ),
+                      )
+                      .toList(),
+                  selectedIndex: appState.navBarState.index,
+                  indicatorColor: Theme.of(context).colorScheme.inversePrimary,
+                  onDestinationSelected: (selectedIndex) {
                     appState.setNavBarState(NavBarState.values[selectedIndex]);
                   },
                 ),
@@ -69,22 +73,24 @@ class _RootPage extends State<RootPage> {
           } else {
             // Navigation bar appears at the left for wider screens (e.g. web)
             return Row(
-              children: [
+              children: <Widget>[
                 NavigationRail(
-                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  backgroundColor: Theme.of(context).colorScheme.onPrimary,
                   extended: constraints.maxWidth >= 600,
                   destinations: NavBarState.values
                       .map(
                         (navBarState) => NavigationRailDestination(
-                            icon: Icon(NavBarItem(navBarState: navBarState)
-                                .getData()
-                                .icon),
-                            label: Text(NavBarItem(navBarState: navBarState)
-                                .getData()
-                                .label)),
+                          icon: Icon(NavBarItem(navBarState: navBarState)
+                              .getData()
+                              .icon),
+                          label: Text(NavBarItem(navBarState: navBarState)
+                              .getData()
+                              .label),
+                        ),
                       )
                       .toList(),
                   selectedIndex: appState.navBarState.index,
+                  indicatorColor: Theme.of(context).colorScheme.inversePrimary,
                   onDestinationSelected: (selectedIndex) {
                     appState.setNavBarState(NavBarState.values[selectedIndex]);
                   },
