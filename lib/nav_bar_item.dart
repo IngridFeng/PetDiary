@@ -8,10 +8,10 @@ enum NavBarState {
 }
 
 class NavBarItemData {
-  IconData icon = Icons.home_outlined;
-  String label = "Home";
+  final IconData icon;
+  final String label;
 
-  NavBarItemData(this.icon, this.label);
+  NavBarItemData({required this.icon, required this.label});
 }
 
 class NavBarItem {
@@ -22,13 +22,13 @@ class NavBarItem {
   NavBarItemData getData() {
     switch (navBarState) {
       case NavBarState.home:
-        return NavBarItemData(Icons.home_outlined, "Home");
+        return NavBarItemData(icon: Icons.home_outlined, label: "Home");
       case NavBarState.friends:
-        return NavBarItemData(Icons.favorite_border, "Friends");
+        return NavBarItemData(icon: Icons.favorite_border, label: "Friends");
       case NavBarState.chat:
-        return NavBarItemData(Icons.chat_bubble_outline, "Chat");
+        return NavBarItemData(icon: Icons.chat_bubble_outline, label: "Chat");
       case NavBarState.profile:
-        return NavBarItemData(Icons.person_outline, "Profile");
+        return NavBarItemData(icon: Icons.person_outline, label: "Profile");
       default:
         throw UnimplementedError(
             "$navBarState not implemented for NavBarItem.");

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'nav_bar_data.dart';
-import 'home_page.dart';
-import 'app_state.dart';
+import 'nav_bar_item.dart';
+import 'home_page/home_page.dart';
+import 'home_page/home_page_state.dart';
 import 'package:provider/provider.dart';
 
 class RootPage extends StatefulWidget {
@@ -12,22 +12,23 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPage extends State<RootPage> {
+  NavBarState navBarState = NavBarState.home;
+
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<AppState>();
     Widget selectedPage;
-    switch (appState.navBarState) {
+    switch (navBarState) {
       case NavBarState.home:
-        selectedPage = const HomePage();
+        selectedPage = ChangeNotifierProvider(
+          create: (context) => HomePageState(),
+          child: const HomePage(),
+        );
       case NavBarState.friends:
         selectedPage = const Placeholder(color: Colors.amber);
       case NavBarState.chat:
         selectedPage = const Placeholder(color: Colors.green);
       case NavBarState.profile:
         selectedPage = const Placeholder(color: Colors.yellow);
-      default:
-        throw UnimplementedError(
-            "$appState.navBarState not implemented for the page.");
     }
 
     // The container for the current page, with its background color
@@ -55,10 +56,12 @@ class _RootPage extends State<RootPage> {
                 ),
               )
               .toList(),
-          selectedIndex: appState.navBarState.index,
+          selectedIndex: navBarState.index,
           indicatorColor: Theme.of(context).colorScheme.inversePrimary,
           onDestinationSelected: (selectedIndex) {
-            appState.setNavBarState(NavBarState.values[selectedIndex]);
+            setState(() {
+              navBarState = NavBarState.values[selectedIndex];
+            });
           },
         ),
       );
@@ -80,10 +83,12 @@ class _RootPage extends State<RootPage> {
                     ),
                   )
                   .toList(),
-              selectedIndex: appState.navBarState.index,
+              selectedIndex: navBarState.index,
               indicatorColor: Theme.of(context).colorScheme.inversePrimary,
               onDestinationSelected: (selectedIndex) {
-                appState.setNavBarState(NavBarState.values[selectedIndex]);
+                setState(() {
+                  navBarState = NavBarState.values[selectedIndex];
+                });
               },
             ),
             Expanded(child: mainArea),
