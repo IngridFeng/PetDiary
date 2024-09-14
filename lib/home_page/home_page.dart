@@ -12,6 +12,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final TextEditingController timelineTileItemsTypeController =
+      TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var homePageState = context.watch<HomePageState>();
@@ -22,17 +25,43 @@ class _HomePageState extends State<HomePage> {
           SliverAppBar(
             pinned: true,
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            flexibleSpace: const FlexibleSpaceBar(
-              title: Text("Yuumi's Diary"),
-            ),
+            title: const Text("Yuumi's Diary"),
+            actions: <Widget>[
+              const SizedBox(width: 24.0),
+              DropdownMenu<String>(
+                width: 210.0,
+                initialSelection: homePageState.selectedTimelineTileType,
+                textStyle: const TextStyle(fontSize: 18.0),
+                controller: timelineTileItemsTypeController,
+                requestFocusOnTap: false,
+                onSelected: (String? type) {
+                  setState(() {
+                    homePageState.setTimelineTileType(type!);
+                  });
+                },
+                inputDecorationTheme: const InputDecorationTheme(
+                  filled: false,
+                  border: InputBorder.none,
+                ),
+                dropdownMenuEntries: timelineTileTypeMap.keys
+                    .map<DropdownMenuEntry<String>>((String type) {
+                  return DropdownMenuEntry<String>(
+                    value: type,
+                    label: type,
+                    enabled: true,
+                  );
+                }).toList(),
+              ),
+            ],
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 10.0)),
+          const SliverToBoxAdapter(child: SizedBox(height: 24.0)),
           homePageState.timelineTileItems.isEmpty
               ? const SliverToBoxAdapter(
                   child: Center(
-                  child: Text(
-                      "Hi there, Yuumi! How's your day? Did you catach a fish? Or did you visit any friends? Get started by writting your diary."),
-                ))
+                    child: Text(
+                        "You did not write any diary yet, Yuumi! Get started creating one!"),
+                  ),
+                )
               : SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
@@ -50,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                           width: 30,
                           height: 30,
                           indicator: _IconIndicator(
-                              iconData: timelineTileData.indicatorIcon),
+                              iconData: timelineTileData.type.indicatorIcon),
                         ),
                         isLast:
                             index == homePageState.timelineTileItems.length - 1,
