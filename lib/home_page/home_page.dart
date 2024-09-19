@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-import 'timeline_tile_items.dart';
+import 'timeline_tile_data.dart';
 import 'home_page_state.dart';
 import 'package:provider/provider.dart';
 
@@ -54,96 +54,129 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 24.0)),
-          homePageState.timelineTileItems.isEmpty
-              ? const SliverToBoxAdapter(
-                  child: Center(
-                    child: Text(
-                        "You did not write any diary yet, Yuumi! Get started creating one!"),
-                  ),
-                )
-              : SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                      TimelineTileData timelineTileData =
-                          homePageState.timelineTileItems[index];
-                      return TimelineTile(
-                        alignment: TimelineAlign.manual,
-                        lineXY: 0.3,
-                        beforeLineStyle: LineStyle(
-                            color:
-                                Theme.of(context).colorScheme.inversePrimary),
-                        indicatorStyle: IndicatorStyle(
-                          indicatorXY: 0.3,
-                          drawGap: true,
-                          width: 30,
-                          height: 30,
-                          indicator: _IconIndicator(
-                              iconData: timelineTileData.type.indicatorIcon),
-                        ),
-                        isLast:
-                            index == homePageState.timelineTileItems.length - 1,
-                        startChild: Center(
-                          child: Container(
-                            alignment: const Alignment(0.0, -0.45),
-                            child: Text(timelineTileData.date),
-                          ),
-                        ),
-                        endChild: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 16, right: 10, top: 10, bottom: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                timelineTileData.description,
+          const SliverToBoxAdapter(child: SizedBox(height: 10.0)),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                if (index == 0) {
+                  return _DiaryEntry(
+                    isFirst: true,
+                    isLast: index == homePageState.filteredTimelineTiles.length,
+                    icon: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: const Icon(Icons.add),
+                      iconSize: 20,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      onPressed: () {
+                        setState(
+                          () {
+                            homePageState.addTimelineTile(
+                              const TimelineTileData(
+                                type: TimelineTileType.playWithHuman,
+                                date: "09/16/2024",
+                                description:
+                                    "Ingrid took a picture for me. Yoo-hoo!",
+                                image: Image(
+                                  image: AssetImage(
+                                      'lib/home_page/assets/yuumi.jpg'),
+                                  height: 200,
+                                ),
                               ),
-                              if (timelineTileData.image != null)
-                                timelineTileData.image!,
-                            ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    endChild: const Padding(
+                      padding: EdgeInsets.only(
+                          left: 16, right: 10, top: 20, bottom: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text("Add a diary entry"),
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  TimelineTileData timelineTileData =
+                      homePageState.filteredTimelineTiles[index - 1];
+                  return _DiaryEntry(
+                    isFirst: false,
+                    isLast: index == homePageState.filteredTimelineTiles.length,
+                    icon: Icon(
+                      timelineTileData.type.indicatorIcon,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                    startChild: Center(
+                      child: Container(
+                        alignment: const Alignment(0.0, -0.45),
+                        child: Text(timelineTileData.date),
+                      ),
+                    ),
+                    endChild: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16, right: 10, top: 20, bottom: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            timelineTileData.description,
                           ),
-                        ),
-                      );
-                    },
-                    childCount: homePageState.timelineTileItems.length,
-                  ),
-                ),
+                          if (timelineTileData.image != null)
+                            timelineTileData.image!,
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              },
+              childCount: homePageState.filteredTimelineTiles.length + 1,
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-class _IconIndicator extends StatelessWidget {
-  const _IconIndicator({required this.iconData});
+class _DiaryEntry extends StatelessWidget {
+  const _DiaryEntry({
+    required this.isFirst,
+    required this.isLast,
+    required this.icon,
+    this.startChild,
+    this.endChild,
+  });
 
-  final IconData iconData;
+  final bool isFirst;
+  final bool isLast;
+  final Widget icon;
+  final Widget? startChild;
+  final Widget? endChild;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Theme.of(context).colorScheme.inversePrimary,
-          ),
+    return TimelineTile(
+      alignment: TimelineAlign.manual,
+      lineXY: 0.3,
+      beforeLineStyle:
+          LineStyle(color: Theme.of(context).colorScheme.inversePrimary),
+      indicatorStyle: IndicatorStyle(
+        indicatorXY: 0.3,
+        drawGap: true,
+        width: 30,
+        height: 30,
+        indicator: CircleAvatar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          child: icon,
         ),
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.center,
-            child: SizedBox(
-              height: 30,
-              width: 30,
-              child: Icon(
-                iconData,
-                size: 20,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
+      isFirst: isFirst,
+      isLast: isLast,
+      startChild: startChild,
+      endChild: endChild,
     );
   }
 }
