@@ -147,14 +147,14 @@ class _DiaryEntry extends StatelessWidget {
     required this.isLast,
     required this.icon,
     this.startChild,
-    this.endChild,
+    required this.endChild,
   });
 
   final bool isFirst;
   final bool isLast;
   final Widget icon;
   final Widget? startChild;
-  final Widget? endChild;
+  final Widget endChild;
 
   @override
   Widget build(BuildContext context) {
