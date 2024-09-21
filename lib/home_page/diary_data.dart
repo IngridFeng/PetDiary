@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 
 // TODO: Add upcoming events e.g. dog park events
-enum TimelineTileType {
+enum DiaryType {
   visitDoctor(Icons.health_and_safety),
   playWithHuman(Icons.photo_camera),
   playWithFriend(Icons.pets);
 
   final IconData indicatorIcon;
-  const TimelineTileType(this.indicatorIcon);
+  const DiaryType(this.indicatorIcon);
 }
 
-Map<String, List<TimelineTileType>> timelineTileTypeMap = {
-  "All Diary Events": TimelineTileType.values,
-  "Doctor Visits": [TimelineTileType.visitDoctor],
-  "Play with Human": [TimelineTileType.playWithHuman],
-  "Play with Friends": [TimelineTileType.playWithFriend],
+Map<String, List<DiaryType>> diaryTypeMap = {
+  "All Diary Events": DiaryType.values,
+  "Doctor Visits": [DiaryType.visitDoctor],
+  "Play with Human": [DiaryType.playWithHuman],
+  "Play with Friends": [DiaryType.playWithFriend],
 };
 
-class TimelineTileData {
-  final TimelineTileType type;
+class DiaryData {
+  final DiaryType type;
   final String date;
   final String description;
   final Image? image;
 
-  const TimelineTileData(
+  const DiaryData(
       {Key? key,
       required this.type,
       required this.date,

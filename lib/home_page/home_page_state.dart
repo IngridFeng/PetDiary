@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'timeline_tile_data.dart';
+import 'diary_data.dart';
 
-var fakeTimelineTiles = [
-  const TimelineTileData(
-    type: TimelineTileType.playWithHuman,
+var fakeDiaries = [
+  const DiaryData(
+    type: DiaryType.playWithHuman,
     date: "09/01/2024",
     description: "Ingrid took a picture for me. Yoo-hoo!",
     image: Image(
@@ -11,8 +11,8 @@ var fakeTimelineTiles = [
       height: 200,
     ),
   ),
-  const TimelineTileData(
-    type: TimelineTileType.playWithHuman,
+  const DiaryData(
+    type: DiaryType.playWithHuman,
     date: "08/30/2024",
     description: "Ingrid took a picture for me. Yoo-hoo!",
     image: Image(
@@ -20,8 +20,8 @@ var fakeTimelineTiles = [
       height: 200,
     ),
   ),
-  const TimelineTileData(
-    type: TimelineTileType.playWithFriend,
+  const DiaryData(
+    type: DiaryType.playWithFriend,
     date: "09/11/2024",
     description: "I visited a friend!",
     image: Image(
@@ -29,8 +29,8 @@ var fakeTimelineTiles = [
       height: 200,
     ),
   ),
-  const TimelineTileData(
-    type: TimelineTileType.playWithHuman,
+  const DiaryData(
+    type: DiaryType.playWithHuman,
     date: "08/27/2024",
     description: "Ingrid took a picture for me. Yoo-hoo!",
     image: Image(
@@ -38,8 +38,8 @@ var fakeTimelineTiles = [
       height: 200,
     ),
   ),
-  const TimelineTileData(
-    type: TimelineTileType.playWithFriend,
+  const DiaryData(
+    type: DiaryType.playWithFriend,
     date: "09/12/2024",
     description: "I visited a friend!",
     image: Image(
@@ -50,41 +50,38 @@ var fakeTimelineTiles = [
 ];
 
 class HomePageState extends ChangeNotifier {
-  String selectedTimelineTileType = "All Diary Events";
-  late List<TimelineTileData> allTimelineTiles = _initTimelineTiles();
-  late List<TimelineTileData> filteredTimelineTiles =
-      _updateFilteredTimelineTiles();
+  String selectedDiaryType = "All Diary Events";
+  late List<DiaryData> allDiaries = _initDiaries();
+  late List<DiaryData> filteredDiaries = _updateFilteredDiaries();
 
   // TODO: RPC to get data here.
-  List<TimelineTileData> _initTimelineTiles() {
-    return fakeTimelineTiles;
+  List<DiaryData> _initDiaries() {
+    return fakeDiaries;
   }
 
-  List<TimelineTileData> _updateFilteredTimelineTiles() {
-    var items = allTimelineTiles
-        .where((i) => timelineTileTypeMap[selectedTimelineTileType]!
-            .toSet()
-            .contains(i.type))
+  List<DiaryData> _updateFilteredDiaries() {
+    var items = allDiaries
+        .where((i) => diaryTypeMap[selectedDiaryType]!.toSet().contains(i.type))
         .toList();
     items.sort((a, b) => b.date.compareTo(a.date));
     return items;
   }
 
-  void setTimelineTileType(String type) {
-    selectedTimelineTileType = type;
-    filteredTimelineTiles = _updateFilteredTimelineTiles();
+  void setDiaryType(String type) {
+    selectedDiaryType = type;
+    filteredDiaries = _updateFilteredDiaries();
     notifyListeners();
   }
 
-  void addTimelineTile(TimelineTileData timelineTileData) {
-    allTimelineTiles.add(timelineTileData);
-    filteredTimelineTiles = _updateFilteredTimelineTiles();
+  void addDiary(DiaryData diaryData) {
+    allDiaries.add(diaryData);
+    filteredDiaries = _updateFilteredDiaries();
     notifyListeners();
   }
 
-  void removeAllTimelineTiles() {
-    allTimelineTiles.clear();
-    filteredTimelineTiles.clear();
+  void removeAllDiaries() {
+    allDiaries.clear();
+    filteredDiaries.clear();
     notifyListeners();
   }
 }

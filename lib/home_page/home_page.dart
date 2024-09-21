@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pet_diary/home_page/create_diary_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-import 'timeline_tile_data.dart';
+import 'diary_data.dart';
 import 'home_page_state.dart';
 import 'package:provider/provider.dart';
 
@@ -12,8 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextEditingController timelineTileItemsTypeController =
-      TextEditingController();
+  final TextEditingController diaryTypeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,20 +30,20 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(width: 24.0),
               DropdownMenu<String>(
                 width: 210.0,
-                initialSelection: homePageState.selectedTimelineTileType,
+                initialSelection: homePageState.selectedDiaryType,
                 textStyle: const TextStyle(fontSize: 18.0),
-                controller: timelineTileItemsTypeController,
+                controller: diaryTypeController,
                 requestFocusOnTap: false,
                 onSelected: (String? type) {
                   setState(() {
-                    homePageState.setTimelineTileType(type!);
+                    homePageState.setDiaryType(type!);
                   });
                 },
                 inputDecorationTheme: const InputDecorationTheme(
                   filled: false,
                   border: InputBorder.none,
                 ),
-                dropdownMenuEntries: timelineTileTypeMap.keys
+                dropdownMenuEntries: diaryTypeMap.keys
                     .map<DropdownMenuEntry<String>>((String type) {
                   return DropdownMenuEntry<String>(
                     value: type,
@@ -61,18 +61,24 @@ class _HomePageState extends State<HomePage> {
                 if (index == 0) {
                   return _DiaryEntry(
                     isFirst: true,
-                    isLast: index == homePageState.filteredTimelineTiles.length,
+                    isLast: index == homePageState.filteredDiaries.length,
                     icon: IconButton(
                       padding: EdgeInsets.zero,
                       icon: const Icon(Icons.add),
                       iconSize: 20,
                       color: Theme.of(context).colorScheme.onPrimary,
                       onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (context) => const CreateDiaryPage()),
+                        );
                         setState(
                           () {
-                            homePageState.addTimelineTile(
-                              const TimelineTileData(
-                                type: TimelineTileType.playWithHuman,
+                            homePageState.addDiary(
+                              const DiaryData(
+                                type: DiaryType.playWithHuman,
                                 date: "09/16/2024",
                                 description:
                                     "Ingrid took a picture for me. Yoo-hoo!",
@@ -99,20 +105,20 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else {
-                  TimelineTileData timelineTileData =
-                      homePageState.filteredTimelineTiles[index - 1];
+                  DiaryData diaryData =
+                      homePageState.filteredDiaries[index - 1];
                   return _DiaryEntry(
                     isFirst: false,
-                    isLast: index == homePageState.filteredTimelineTiles.length,
+                    isLast: index == homePageState.filteredDiaries.length,
                     icon: Icon(
-                      timelineTileData.type.indicatorIcon,
+                      diaryData.type.indicatorIcon,
                       size: 20,
                       color: Theme.of(context).colorScheme.onPrimary,
                     ),
                     startChild: Center(
                       child: Container(
                         alignment: const Alignment(0.0, -0.45),
-                        child: Text(timelineTileData.date),
+                        child: Text(diaryData.date),
                       ),
                     ),
                     endChild: Padding(
@@ -122,17 +128,16 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            timelineTileData.description,
+                            diaryData.description,
                           ),
-                          if (timelineTileData.image != null)
-                            timelineTileData.image!,
+                          if (diaryData.image != null) diaryData.image!,
                         ],
                       ),
                     ),
                   );
                 }
               },
-              childCount: homePageState.filteredTimelineTiles.length + 1,
+              childCount: homePageState.filteredDiaries.length + 1,
             ),
           ),
         ],
